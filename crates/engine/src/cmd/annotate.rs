@@ -481,15 +481,15 @@ fn run_leader(s: &mut Session, p: &Value) -> Result<Value> {
         vertices: pts.iter().map(|q| v3(*q)).collect(),
         arrow: true,
         spline: false,
-        style: st,
+        style: st.clone(),
     }))?;
     let mut out = vec![h.hex()];
     if let (Some(t), Some(last)) = (str_param(p, "text"), pts.last()) {
         // DIMTXT x the leader's DIMSCALE (the drawing's when the style's is 0), like the arrows.
         let th = {
             let d = s.doc()?;
-            let st = d.dim_style(&style(s)).cloned().unwrap_or_default();
-            st.text_height * cadcraft_render::leader_scale(d, Some(&st))
+            let ds = d.dim_style(&st).cloned().unwrap_or_default();
+            ds.text_height * cadcraft_render::leader_scale(d, Some(&ds))
         };
         out.push(
             s.add_entity(EntityKind::MText(MText {
